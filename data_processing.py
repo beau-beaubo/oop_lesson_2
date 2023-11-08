@@ -21,11 +21,11 @@ with open(os.path.join(__location__, 'Players.csv')) as f:
     for r in rows:
         player.append(dict(r))
 
-teams = []
+team = []
 with open(os.path.join(__location__, 'Teams.csv')) as f:
     rows = csv.DictReader(f)
     for r in rows:
-        teams.append(dict(r))
+        team.append(dict(r))
 
 titanic = []
 with open(os.path.join(__location__, 'Titanic.csv')) as f:
@@ -93,7 +93,7 @@ class Table:
 table1 = Table('cities', cities)
 table2 = Table('countries', countries)
 table3 = Table('player', player)
-table4 = Table('teams', teams)
+table4 = Table('team', team)
 table5 = Table('titanic', titanic)
 my_DB = DB()
 my_DB.insert(table1)
@@ -103,6 +103,22 @@ my_DB.insert(table4)
 my_DB.insert(table5)
 my_table1 = my_DB.search('cities')
 my_table3 = my_DB.search('player')
+my_table3_filtered = my_table3.filter(lambda x: 'ia' in x['team']).filter(lambda x: int((x['minutes'])) < 200)\
+    .filter(lambda x: int((x['passes'])) > 100)
+my_table3_selected = my_table3_filtered.select(['surname', 'team', 'position'])
+print(my_table3_selected)
+my_table4 = my_DB.search('team')
+avg_below = my_table4.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda x: sum(x)/len(x),'games')
+avg_higher = my_table4.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x),'games')
+
+print(f'avg ranking Below 10 : {avg_below:.2f} vs ranking above or equal 10 :{avg_higher:.2f}')
+
+avg_forward = my_table3.filter(lambda x: (x['position']) == 'forward').aggregate(lambda x: sum(x)/len(x),'passes')
+avg_midfielder = my_table3.filter(lambda x: (x['position']) == 'midfielder').aggregate(lambda x: sum(x)/len(x),'passes')
+print(f'avg forward :{avg_forward:.2f}')
+print(f'avg midfielder: {avg_midfielder:.2f}')
+
+
 # print(my_table3.table_name, my_table3.table)
 
 # print("Test filter: only filtering out cities in Italy")
@@ -148,3 +164,4 @@ my_table3 = my_DB.search('player')
 #     if len(my_table1_filtered.table) >= 1:
 #         print(item['country'], my_table1_filtered.aggregate(lambda x: min(x), 'latitude'), my_table1_filtered.aggregate(lambda x: max(x), 'latitude'))
 # print()
+
