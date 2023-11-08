@@ -118,7 +118,18 @@ avg_midfielder = my_table3.filter(lambda x: (x['position']) == 'midfielder').agg
 print(f'avg forward :{avg_forward:.2f}')
 print(f'avg midfielder: {avg_midfielder:.2f}')
 
+my_table5 = my_DB.search('titanic')
+avg_first = my_table5.filter(lambda x: (x['class']) == '1').aggregate(lambda x: sum(x)/len(x),'fare')
+avg_third = my_table5.filter(lambda x: (x['class']) == '3').aggregate(lambda x: sum(x)/len(x),'fare')
+print(f'Frist Class Fare : {avg_first:.2f} vs Third Class Fare : {avg_third:.2f}')
 
+male_survival = my_table5.filter(lambda x: (x['gender']) == 'M').filter(lambda x: (x['survived']) == 'yes')
+all_male = my_table5.filter(lambda x: (x['gender']) == 'M')
+male_survival_rate = len(male_survival.table)/len(all_male.table)
+female_survival = my_table5.filter(lambda x: (x['gender']) == 'F').filter(lambda x: (x['survived']) == 'yes')
+all_female = my_table5.filter(lambda x: (x['gender']) == 'F')
+female_survival_rate = len(female_survival.table)/len(all_female.table)
+print(f' male rate : {male_survival_rate:.2f} vs female rate: {female_survival_rate:.2f}')
 # print(my_table3.table_name, my_table3.table)
 
 # print("Test filter: only filtering out cities in Italy")
