@@ -1,10 +1,8 @@
+""" Generate combination"""
+
+
 def gen_comb_list(list_set):
-#     '''
-#     Parameters:
-#         list_set: a list of lists where each contains at least one element
-#     Returns:
-#         a list of lists, each of which is made from a combination of elements in each list in list_set
-#     '''
+    """generate combination list"""
     if not list_set:
         return [[]]
 
